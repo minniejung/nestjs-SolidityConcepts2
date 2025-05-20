@@ -11,14 +11,8 @@ async function main() {
   const bank = await ContractBank.deploy();
   await bank.waitForDeployment();
 
-  const ContractVault = await ethers.getContractFactory("Vault");
-  const vault = await ContractVault.deploy();
-  await vault.waitForDeployment();
-
   console.log(`Bank contract deployed at: ${bank.target}`);
   await makeAbi("Bank", bank.target);
-  console.log(`Vault contract deployed at: ${vault.target}`);
-  await makeAbi("Vault", vault.target);
 }
 
 main().catch((error) => {

@@ -78,7 +78,7 @@ export class BankService {
 
   async getOrigin() {
     try {
-      // Todo: getOrigin의값을 리턴합니다.
+    // Todo: getOrigin의값을 리턴합니다.
       return await this.ethersService.getOrigin();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
