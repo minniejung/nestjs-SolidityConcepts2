@@ -17,8 +17,8 @@ contract Vault {
         sentValue = msg.value;
         timestamp = block.timestamp;
 
-        (bool success, ) = tx.origin.call{value: msg.value}("");
-        require(success, "Failed to send ether");
+        // (bool success, ) = msg.sender.call{value: msg.value}("");
+        // require(success, "Failed to send ether");
     }
 
     function getCaller() public view returns (address) {

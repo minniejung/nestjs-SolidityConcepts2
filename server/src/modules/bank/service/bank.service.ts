@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { EthersService } from '../../ethers/ethers.service';
-import { exceptions } from '../../../common/exceptions/exception.config';
+import { Injectable } from "@nestjs/common";
+import { EthersService } from "../../ethers/ethers.service";
+import { exceptions } from "../../../common/exceptions/exception.config";
+import { ZeroAddress } from "ethers";
 
 @Injectable()
 export class BankService {
@@ -9,27 +10,35 @@ export class BankService {
   async getOwner() {
     try {
       // Todo: owner의 값을 리턴합니다.
-      return;
+      return await this.ethersService.owner();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async getBalance() {
     try {
       // Todo: getContractBalance의값을 리턴합니다.
-      return;
+      return this.ethersService.sentValue();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async getTimestamp() {
     try {
       // Todo: getTimestamp의값을 리턴합니다.
-      return;
+      console.log(
+        "this.ethersService.timestamp();",
+        this.ethersService.timestamp()
+      );
+      const timestamp = await this.ethersService.timestamp();
+      return timestamp.toString();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
@@ -37,7 +46,8 @@ export class BankService {
     try {
       // Todo: gasUsed의 값을 리턴합니다.
       // ⚠️ bigint 타입은 JSON으로 변환 시 string으로 변환 필요
-
+      const gas = await this.ethersService.gasUsed();
+      return gas.toString();
       return;
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
@@ -48,28 +58,31 @@ export class BankService {
   async deposit(value: number) {
     try {
       // Todo: deposit의 값을 리턴합니다.
-
-      return;
+      return await this.ethersService.deposit(value);
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async getCaller() {
     try {
       // Todo: getCaller의 값을 리턴합니다.
+      return await this.ethersService.getCaller();
       return;
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async getOrigin() {
     try {
       // Todo: getOrigin의값을 리턴합니다.
-      return;
+      return await this.ethersService.getOrigin();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
@@ -85,36 +98,44 @@ export class BankService {
         }
         ⚠️ bigint 타입은 JSON으로 변환 시 string으로 변환 필요
       */
+      const blockDetails = await this.ethersService.getBlockDetails();
 
-      return;
+      return {
+        blockNumber: blockDetails[0].toString(),
+        blockPrevrandao: blockDetails[1].toString(),
+        blockGasLimit: blockDetails[2].toString(),
+        blockCoinBase: blockDetails[3],
+      };
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async getGasTrack() {
     try {
       // Todo: trackGasUsage의 값을 리턴합니다.
-      return;
+      return await this.ethersService.trackGasUsage();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async getHash(message: string) {
     try {
       // Todo: generateHash의 값을 리턴합니다.
-      return;
+      return await this.ethersService.generateHash(message);
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 
   async withdraw(value: number) {
     try {
       // Todo: withDraw의 값을 리턴합니다.
-
-      return;
+      return await this.ethersService.withdraw(value);
     } catch (error) {
       /*
         Todo: 스마트 컨트랙트에서 발생한 오류 유형에 따라 예외를 정의합니다.
@@ -129,6 +150,10 @@ export class BankService {
         - 예외: 그 외 오류들
           → exceptions.createBadRequestException(error.message)
       */
+      if (error.reason === "Only the owner can call withdraw.") {
+        throw exceptions.ONLY_OWNER;
+      }
+      throw exceptions.createBadRequestException(error.message);
     }
   }
 }
