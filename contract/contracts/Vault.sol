@@ -42,7 +42,9 @@ contract Vault {
             sum += i;
         }
 
-        gasUsed = initialGas - gasleft();
+        uint256 finalGas = gasleft();
+
+        gasUsed = initialGas - finalGas;
     }
 
     function generateHash(string calldata _msg) public pure returns (bytes32) {
