@@ -29,8 +29,17 @@ contract Vault {
         return tx.origin;
     }
 
-    function getBlockDetails() public view returns (uint, uint, uint, address) {
-        return (block.number, block.prevrandao, block.gaslimit, block.coinbase);
+    // function getBlockDetails() public view returns (uint, uint, uint, address) {
+    //     return (block.number, block.prevrandao, block.gaslimit, block.coinbase);
+    // }
+
+    function getBlockDetails() public view returns (uint blockNumber, uint blockPrevrandao, uint blockGasLimit, address blockCoinBase) {
+    return {
+        blockNumber = block.number;
+        blockPrevrandao = block.prevrandao;
+        blockGasLimit = block.gaslimit;
+        blockCoinBase = block.coinbase;
+    }
     }
 
     function trackGasUsage() public {
