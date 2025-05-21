@@ -48,7 +48,6 @@ export class BankService {
       // ⚠️ bigint 타입은 JSON으로 변환 시 string으로 변환 필요
       const gas = await this.ethersService.gasUsed();
       return gas.toString();
-      return;
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
       throw exceptions.createBadRequestException(error.message);
@@ -69,7 +68,6 @@ export class BankService {
     try {
       // Todo: getCaller의 값을 리턴합니다.
       return await this.ethersService.getCaller();
-      return;
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
       throw exceptions.createBadRequestException(error.message);
@@ -78,7 +76,7 @@ export class BankService {
 
   async getOrigin() {
     try {
-    // Todo: getOrigin의값을 리턴합니다.
+      // Todo: getOrigin의값을 리턴합니다.
       return await this.ethersService.getOrigin();
     } catch (error) {
       //  Todo: 에러를 응답합니다.(exceptions.createBadRequestException(error.message))
